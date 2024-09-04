@@ -1,0 +1,101 @@
+from settings import *
+from os.path import join
+from os import walk
+from pytmx.util_pygame import load_pygame
+
+# imports 
+def import_image(*path, alpha = True, format = 'png',scale=1):
+	full_path = join(*path) + f'.{format}'
+	surf = pygame.image.load(full_path).convert_alpha() if alpha else pygame.image.load(full_path).convert()
+	surf=pygame.transform.scale_by(surf,scale)
+	return surf
+
+def import_folder(*path):
+	frames = []
+	for folder_path, sub_folders, image_names in walk(join(*path)):
+		for image_name in sorted(image_names, key = lambda name: int(name.split('.')[0])):
+			full_path = join(folder_path, image_name)
+			surf = pygame.image.load(full_path).convert_alpha()
+			frames.append(surf)
+	return frames
+
+def import_folder_dict(*path):
+	frames = {}
+	for folder_path, sub_folders, image_names in walk(join(*path)):
+		for image_name in image_names:
+			full_path = join(folder_path, image_name)
+			surf = pygame.image.load(full_path).convert_alpha()
+			frames[image_name.split('.')[0]] = surf
+	return frames
+
+def import_sub_folders(*path):
+	frames = {}
+	for _, sub_folders, __ in walk(join(*path)):
+		if sub_folders:
+			for sub_folder in sub_folders:
+				frames[sub_folder] = import_folder(*path, sub_folder)
+	return frames
+
+def import_tilemap(cols, rows, *path):
+	frames = {}
+	surf = import_image(*path)
+	cell_width, cell_height = surf.get_width() / cols, surf.get_height() / rows
+	for col in range(cols):
+		for row in range(rows):
+			cutout_rect = pygame.Rect(col * cell_width, row * cell_height,cell_width,cell_height)
+			cutout_surf = pygame.Surface((cell_width, cell_height))
+			cutout_surf.fill('green')
+			cutout_surf.set_colorkey('green')
+			cutout_surf.blit(surf, (0,0), cutout_rect)
+			frames[(col, row)] = cutout_surf
+	return frames
+
+def char_importer(cols,rows,*path):
+	frame_dict= import_tilemap(cols,rows,*path)
+	new_dict={}
+	for row,direction in enumerate(('down','left','right','up')):
+		new_dict[direction]=[frame_dict[(col,row)] for col in range(cols)]
+		new_dict[f'{direction}_idle']=[frame_dict[0,row]]
+	return new_dict		
+	
+def all_chars_importer(*path):
+	new_dict={}
+	for folder_path, sub_folders, image_names in walk(join(*path)):
+		for image in image_names:
+			image_name=image.split('.')[0]
+			new_dict[image_name]=char_importer(4,4,*path,image_name)
+	return new_dict
+
+def tmx_importer(*path):
+	tmx_dict={}
+	for folder_path,sub_folders,file_names in walk(join(*path)):
+		for file in file_names:
+			tmx_dict[file.split('.')[0]]=load_pygame(join(folder_path,file))
+		return tmx_dict
+
+
+# **********************************************************************************
+# game functions
+# **********************************************************************************
+def draw_bar(surface,rect,value,max_value,color,bg_color,radius=1):
+	ratio=rect.width/max_value
+	progress=max(0,min(rect.width,value*ratio))
+	progress_rect=pygame.FRect(rect.topleft,(progress,rect.height))
+	pygame.draw.rect(surface,bg_color,rect,0,radius)
+	pygame.draw.rect(surface,color,progress_rect,0,radius)
+	
+def in_range(radius,entity,target,tolerance=50):
+	relation=vector(target.rect.center)-vector(entity.rect.center)
+	# inside distance
+	if relation.length()<radius:
+		# same horizontal plane
+		if abs(relation.y)<tolerance:
+			# facing target
+			if entity.facing_direction=='left' and relation.x<0 or entity.facing_direction=='right' and relation.x>0:
+				return True
+			
+		if abs(relation.x)<tolerance:
+			# facing target
+			if entity.facing_direction=='up' and relation.y<0 or entity.facing_direction=='down' and relation.y>0:
+				return True
+	return False

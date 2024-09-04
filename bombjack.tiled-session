@@ -1,0 +1,69 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "data/maps/level1.tmx",
+    "expandedProjectPaths": [
+    ],
+    "file.lastUsedOpenFilter": "All Files (*)",
+    "fileStates": {
+        "001.tsx": {
+            "scaleInDock": 1.5,
+            "scaleInEditor": 3
+        },
+        "data/maps/level1.tmx": {
+            "scale": 4,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 63,
+                "y": 90.75
+            }
+        },
+        "data/tilesets/bomb_tiles.tsx": {
+            "scaleInDock": 2,
+            "scaleInEditor": 1
+        },
+        "data/tilesets/platforms.tsx": {
+            "scaleInDock": 3,
+            "scaleInEditor": 1
+        },
+        "data/tilesets/tmap.tsx": {
+            "scaleInDock": 1.5,
+            "scaleInEditor": 3
+        },
+        "lev1.tmx": {
+            "scale": 2,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 130.5,
+                "y": 103.5
+            }
+        }
+    },
+    "last.externalTilesetPath": "D:/PYTHON_CURSO/5games-main/bombjack/data/tilesets",
+    "last.imagePath": "D:/PYTHON_CURSO/5games-main/bombjack",
+    "map.height": 24,
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 8,
+    "map.tileWidth": 8,
+    "map.width": 32,
+    "openFiles": [
+        "data/maps/level1.tmx",
+        "data/tilesets/platforms.tsx"
+    ],
+    "project": "bombjack.tiled-project",
+    "recentFiles": [
+        "data/tilesets/platforms.tsx",
+        "data/maps/level1.tmx",
+        "data/tilesets/bomb_tiles.tsx",
+        "data/tilesets/tmap.tsx",
+        "001.tsx",
+        "lev1.tmx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 8,
+        "width": 8
+    }
+}
